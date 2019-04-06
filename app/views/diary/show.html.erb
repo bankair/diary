@@ -1,1 +1,1 @@
-<%= react_component("Diary", { id: @diary.id, entries: @diary.entries.map(&:to_hash) }) %>
+<%= react_component("Diary", { id: @diary.id, entries: @diary.entries.map(&:attributes) }) %>
