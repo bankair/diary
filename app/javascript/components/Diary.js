@@ -1,33 +1,7 @@
 import React from "react"
 import PropTypes from "prop-types"
-import Moment from "moment"
 import Entry from "../modules/Entry"
-
-class EntryView extends React.Component {
-  constructor(props) {
-    super(props)
-    this.handleClick = this.handleClick.bind(this);
-  }
-
-  handleClick() {
-    this.props.entry.destroy()
-  }
-
-  render () {
-    return (
-      <tr>
-        <td className="entryTime text-muted col-xs-1">{Moment(this.props.entry.created_at).format('HH:mm:ss')}</td>
-        <td className="entryPseudo text-primary col-xs-2">{this.props.entry.pseudo}:</td>
-        <td className="entryContent col-xl-3">{this.props.entry.content}</td>
-        <td className="col-xs-4">
-          <button type="button" className="close" aria-label="Close" onClick={this.handleClick}>
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </td>
-      </tr>
-    );
-  }
-}
+import EntryView from "./EntryView"
 
 class Diary extends React.Component {
   constructor(props) {
@@ -79,6 +53,7 @@ class Diary extends React.Component {
     }
 
     Entry.create(this.props.id, pseudo, content)
+  }
 
   componentDidMount() {
     Entry.store().subscribe(this.handleUpdate)
