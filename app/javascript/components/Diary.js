@@ -1,12 +1,15 @@
 import React from "react"
 import PropTypes from "prop-types"
+import Moment from "moment"
 
 class Entry extends React.Component {
   render () {
     return (
-      <div key={this.props.created_at}>
-        <p>[{this.props.created_at}] {this.props.pseudo}: {this.props.content}</p>
-      </div>
+      <tr>
+        <td>{Moment(this.props.created_at).format('hh:mm:ss')}</td>
+        <td>{this.props.pseudo}</td>
+        <td>{this.props.content}</td>
+      </tr>
     );
   }
 }
@@ -64,12 +67,29 @@ class Diary extends React.Component {
     return (
       <React.Fragment>
         <h1>Diary</h1>
-        {this.state.entries.map((e) => <Entry key={e.created_at} created_at={e.created_at} pseudo={e.pseudo} content={e.content} />)}
-      <form onSubmit={this.handleSubmit}>
-        <input id="pseudoInput" type="text" value={pseudo} name="pseudo" onChange={this.handlePseudoChange}/>
-        <input id="contentInput" type="text" value={content} name="content" onChange={this.handleContentChange}/>
-        <input type="submit" name="Submit" />
-      </form>
+        <table className="table table-bordered table-striped">
+          <thead>
+            <tr>
+              <th className="text-center">
+                Time
+              </th>
+              <th className="text-center">
+                Pseudo
+              </th>
+              <th className="text-center">
+                What does the fox say?
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+          {this.state.entries.map((e) => <Entry key={e.created_at} created_at={e.created_at} pseudo={e.pseudo} content={e.content} />)}
+          </tbody>
+        </table>
+        <form onSubmit={this.handleSubmit}>
+          <input id="pseudoInput" type="text" value={pseudo} name="pseudo" onChange={this.handlePseudoChange}/>
+          <input id="contentInput" type="text" value={content} name="content" onChange={this.handleContentChange}/>
+          <input type="submit" name="Submit" />
+        </form>
       </React.Fragment>
     );
   }
