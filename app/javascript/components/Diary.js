@@ -16,7 +16,7 @@ class Diary extends React.Component {
     const newState = Entry.store().getState()
     this.setState(newState)
     window.setTimeout(() => document.getElementById("bottomScrollAnchor").scrollIntoView({behavior: 'smooth'}), 200)
-    window.setTimeout(() => document.getElementById("pseudoInput").focus(), 300)
+    window.setTimeout(() => { let node = document.getElementById("pseudoInput"); node.focus(); node.select() }, 300)
   }
 
 

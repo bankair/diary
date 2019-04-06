@@ -24,6 +24,7 @@ class Entry {
     this.diary_id = body.diary_id
     this.pseudo = body.pseudo
     this.content = body.content
+    this.details = body.details
     this.created_at = body.created_at
   }
 
