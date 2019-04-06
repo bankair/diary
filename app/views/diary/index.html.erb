@@ -1,0 +1,4 @@
+<h1>Diaries</h1>
+<% @diaries.each do |diary| %>
+  <%= link_to("Diary of #{diary.created_at}", diary_path(diary)) %><br/>
+<% end %>
