@@ -13,3 +13,32 @@
  *= require_tree .
  *= require_self
  */
+
+.table td {
+  padding-top: 0rem;
+  padding-bottom: 0rem;
+}
+
+.entryTime {
+  
+}
+
+.entryPseudo {
+  text-align: right;
+}
+
+.entryContent {
+  word-break: break-all;
+  padding-left: 1rem;
+}
+
+.footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+}
+
+.content {
+  margin-bottom: 50px;
+}
