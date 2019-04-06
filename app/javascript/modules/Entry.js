@@ -39,7 +39,7 @@ class Entry {
       .then(data => store.dispatch({ type: 'DESTROY', id: this.id }))
   }
 
-  static create(diary_id, pseudo, content) {
+  static create(diary_id, pseudo, content, details) {
     fetch(`/diary/${diary_id}/entry/`, {
       method: 'POST',
       headers: {
@@ -47,7 +47,7 @@ class Entry {
         'Content-Type': 'application/json',
         'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
       },
-      body: JSON.stringify({ pseudo, content })
+      body: JSON.stringify({ pseudo, content, details })
     })
       .then(response => response.json())
       .then(data => store.dispatch({ type: 'CREATE', entry: data}))

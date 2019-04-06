@@ -21,6 +21,7 @@ ActiveRecord::Schema.define(version: 2019_04_06_052924) do
     t.integer "diary_id"
     t.string "pseudo", limit: 30
     t.string "content"
+    t.string "details"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["diary_id"], name: "index_entries_on_diary_id"

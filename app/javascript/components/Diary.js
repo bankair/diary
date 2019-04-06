@@ -2,67 +2,34 @@ import React from "react"
 import PropTypes from "prop-types"
 import Entry from "../modules/Entry"
 import EntryView from "./EntryView"
+import EntryEdit from "./EntryEdit"
 
 class Diary extends React.Component {
   constructor(props) {
     super(props)
-    this.state = {
-      entries: props.entries.slice(),
-      pseudo: '',
-      content: '',
-      lastSpeaker: ''
-    }
+    this.state = { entries: [] }
     this.handleUpdate = this.handleUpdate.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handlePseudoChange = this.handlePseudoChange.bind(this);
-    this.handleContentChange = this.handleContentChange.bind(this);
-    this.handlePseudoKeypress = this.handlePseudoKeypress.bind(this);
   }
 
-  handlePseudoKeypress(event) {
-    if (event.key == 'Enter') {
-      event.preventDefault()
-      document.getElementById('contentInput').focus()
-    }
-  }
-
-  handlePseudoChange(event) { this.setState({pseudo: event.target.value}); }
-  handleContentChange(event) { this.setState({content: event.target.value}); }
 
   handleUpdate() {
     const newState = Entry.store().getState()
-    this.setState({...newState, pseudo: '', content: '' })
+    this.setState(newState)
     window.setTimeout(() => document.getElementById("bottomScrollAnchor").scrollIntoView({behavior: 'smooth'}), 200)
     window.setTimeout(() => document.getElementById("pseudoInput").focus(), 300)
   }
 
-  handleSubmit(event) {
-    event.preventDefault()
-
-    let pseudo = this.state.pseudo || this.state.lastSpeaker
-    if (!pseudo) {
-      window.alert('Please fill in "Who?" field')
-      document.getElementById("pseudoInput").focus()
-      return
-    }
-    let content = this.state.content
-    if (!content) {
-      window.alert('Please fill in "Said what?" field')
-      document.getElementById("contentInput").focus()
-      return
-    }
-
-    Entry.create(this.props.id, pseudo, content)
-  }
 
   componentDidMount() {
-    Entry.store().subscribe(this.handleUpdate)
+    this.unsubscribe = Entry.store().subscribe(this.handleUpdate)
     Entry.store().dispatch({ type: 'LOAD', data: this.props.entries })
   }
 
+  componentWillUnmount() {
+    this.unsubscribe()
+  }
+
   render () {
-    let pseudo = this.state.pseudo
-    let content = this.state.content
     return (
       <React.Fragment>
         <div className="content">
@@ -83,13 +50,7 @@ class Diary extends React.Component {
           <div id="bottomScrollAnchor" style={{ float:"left", clear: "both" }} ref={(el) => { this.messagesEnd = el }}></div>
         </div>
 
-        <footer className="footer bg-secondary">
-          <form onSubmit={this.handleSubmit}>
-            <input id="pseudoInput" placeholder="Who?" type="text" value={pseudo} name="pseudo" onKeyPress={this.handlePseudoKeypress} onChange={this.handlePseudoChange}/>
-            <input className="w-75" placeholder="Said what?" id="contentInput" type="text" value={content} name="content" onChange={this.handleContentChange}/>
-            <input type="submit" name="Submit" />
-          </form>
-        </footer>
+        <footer className="footer bg-light"><EntryEdit diary_id={this.props.id}/></footer>
 
       </React.Fragment>
     );

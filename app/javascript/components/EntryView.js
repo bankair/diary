@@ -10,7 +10,6 @@ class EntryView extends React.Component {
 
   handleDestroyClick() {
     let r = confirm(`Delete "${this.props.entry.pseudo}: ${this.props.entry.content}"?`)
-    console.log(r)
     if (r == true) {
       this.props.entry.destroy()
     }

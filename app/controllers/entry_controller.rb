@@ -3,7 +3,8 @@ class EntryController < ApplicationController
 
   def create
     pseudo, content = params.require(%i(pseudo content))
-    render json: @diary.entries.create!(pseudo: pseudo, content: content)
+    details = params[:details]
+    render json: @diary.entries.create!(pseudo: pseudo, content: content, details: details)
   end
 
   def destroy
