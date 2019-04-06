@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  diary: one
+  pseudo: MyString
+  content: MyString
+
+two:
+  diary: two
+  pseudo: MyString
+  content: MyString
