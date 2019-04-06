@@ -3,62 +3,6 @@ import PropTypes from "prop-types"
 import Moment from "moment"
 import Entry from "../modules/Entry"
 
-import { createStore } from 'redux'
-
-function reducer(state = { entries: [], lastSpeaker: '' }, action) {
-  switch (action.type) {
-    case 'LOAD':
-      return { entries: action.data.map((body) => new Entry(body)) }
-    case 'CREATE':
-      let entries = state.entries.slice()
-      let entry = new Entry(action.entry)
-      entries.push(entry)
-      return { entries: entries, lastSpeaker: entry.pseudo }
-    case 'DESTROY':
-      return { entries: state.entries.filter((e) => e.id != action.id) }
-    default:
-      return state
-  }
-}
-
-let store = createStore(reducer)
-
-class Entry {
-  constructor(body) {
-    this.id = body.id
-    this.diary_id = body.diary_id
-    this.pseudo = body.pseudo
-    this.content = body.content
-    this.created_at = body.created_at
-  }
-
-  destroy() {
-    fetch(`/diary/${this.diary_id}/entry/${this.id}`, {
-      method: 'DELETE',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-      }
-    })
-      .then(data => store.dispatch({ type: 'DESTROY', id: this.id }))
-  }
-
-  static create(diary_id, pseudo, content) {
-    fetch(`/diary/${diary_id}/entry/`, {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-      },
-      body: JSON.stringify({ pseudo, content })
-    })
-      .then(response => response.json())
-      .then(data => store.dispatch({ type: 'CREATE', entry: data}))
-  }
-}
-
 class EntryView extends React.Component {
   constructor(props) {
     super(props)
@@ -84,8 +28,6 @@ class EntryView extends React.Component {
     );
   }
 }
-
-const focus = (target) => document.getElementById(target).focus()
 
 class Diary extends React.Component {
   constructor(props) {
@@ -113,17 +55,8 @@ class Diary extends React.Component {
   handlePseudoChange(event) { this.setState({pseudo: event.target.value}); }
   handleContentChange(event) { this.setState({content: event.target.value}); }
 
-  // addEntry(body) {
-  //   let entries = this.state.entries.slice()
-  //   let entry = new Entry(body)
-  //   entries.push(entry)
-  //   this.setState({entries, pseudo: '', content: '', lastSpeaker: entry.pseudo})
-  //   window.setTimeout(() => document.getElementById("bottomScrollAnchor").scrollIntoView({behavior: 'smooth'}), 200)
-  //   window.setTimeout(() => document.getElementById("pseudoInput").focus(), 300)
-  // }
-
   handleUpdate() {
-    const newState = store.getState()
+    const newState = Entry.store().getState()
     this.setState({...newState, pseudo: '', content: '' })
     window.setTimeout(() => document.getElementById("bottomScrollAnchor").scrollIntoView({behavior: 'smooth'}), 200)
     window.setTimeout(() => document.getElementById("pseudoInput").focus(), 300)
@@ -147,22 +80,9 @@ class Diary extends React.Component {
 
     Entry.create(this.props.id, pseudo, content)
 
-    // fetch(`/diary/${this.props.id}/entry/`, {
-    //   method: 'POST',
-    //   headers: {
-    //     'Accept': 'application/json',
-    //     'Content-Type': 'application/json',
-    //     'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-    //   },
-    //   body: JSON.stringify({ pseudo, content })
-    // })
-    //   .then(response => response.json())
-    //   .then(data => this.addEntry(data))
-  }
-
   componentDidMount() {
-    store.subscribe(this.handleUpdate)
-    store.dispatch({ type: 'LOAD', data: this.props.entries })
+    Entry.store().subscribe(this.handleUpdate)
+    Entry.store().dispatch({ type: 'LOAD', data: this.props.entries })
   }
 
   render () {
