@@ -5,4 +5,9 @@ class EntryController < ApplicationController
     pseudo, content = params.require(%i(pseudo content))
     render json: @diary.entries.create!(pseudo: pseudo, content: content)
   end
+
+  def destroy
+    @diary.entries.find(params.require(:id)).destroy
+    head :ok
+  end
 end
