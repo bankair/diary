@@ -3,6 +3,12 @@ import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
 import Entry from "../modules/Entry"
 
+const focus = (target) => {
+  const node = document.getElementById(target)
+  node.focus()
+  node.select()
+}
+
 class EntryEdit extends React.Component {
   constructor(props) {
     super(props)
@@ -24,6 +30,7 @@ class EntryEdit extends React.Component {
     this.handleDetailsChange = this.handleDetailsChange.bind(this)
   }
 
+
   handleDetailsChange(event) {
     this.setState({currentDetails: event.target.value})
   }
@@ -35,10 +42,12 @@ class EntryEdit extends React.Component {
 
   handleCancelDetailsModal(event) {
     this.setState({ showDetailModal: false });
+    focus('contentInput')
   }
 
   handleSaveDetailsModal(event) {
     this.setState({ showDetailModal: false, details: this.state.currentDetails });
+    window.setTimeout(() => { focus('contentInput') }, 200)
   }
 
   handlePseudoChange(event) { this.setState({pseudo: event.target.value}); }
@@ -46,9 +55,12 @@ class EntryEdit extends React.Component {
   handlePseudoKeypress(event) {
     if (event.key == 'Enter') {
       event.preventDefault()
-      document.getElementById('contentInput').focus()
+      focus('contentInput')
+      // document.getElementById('contentInput').focus()
     }
   }
+
+
 
   handleSubmit(event) {
     event.preventDefault()
@@ -56,16 +68,12 @@ class EntryEdit extends React.Component {
     let pseudo = this.state.pseudo
     if (!pseudo) {
       window.alert('Please fill in "Who?" field')
-      node = document.getElementById("pseudoInput")
-      node.focus()
-      node.select()
-      return
+      return focus('pseudoInput')
     }
     let content = this.state.content
     if (!content) {
       window.alert('Please fill in "Said what?" field')
-      document.getElementById("contentInput").focus()
-      return
+      return focus('contentInput')
     }
 
     Entry.create(this.props.diary_id, pseudo, content, this.state.details)
